@@ -7,7 +7,7 @@ objects = main.o odos.o srtf.o sint.o
 all: output
 
 output: $(objects)
-	gcc $(BUILD_DIR)/main.o $(BUILD_DIR)/odos.o $(BUILD_DIR)/srtf.o -o $(BUILD_DIR)/output
+	gcc $(BUILD_DIR)/main.o $(BUILD_DIR)/sint.o $(BUILD_DIR)/odos.o $(BUILD_DIR)/srtf.o -o $(BUILD_DIR)/output
 
 
 $(objects): %.o: $(SRC_DIR)/%.c
