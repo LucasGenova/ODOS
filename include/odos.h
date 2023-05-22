@@ -1,18 +1,19 @@
 /*
 Esse é o arquivo de header de odos.c
+Contém as definições das representações internas do simulador e as definições das funções do simulador
 */
 
 #ifndef ODOS
 #define ODOS
 
-#define BUFFER_SIZE 100
+#define BUFFER_SIZE 100 //ToDo: as estruturas de dados devem crescer dinâmicamente sem a necessidade de um limite maximo
 
 typedef enum proc_state{ // Estados previstos para um processo.
     RUNNING,
     READY,
     WAITING,
-    BLOCKED,                                                                                                                                                                                          
-    //INACTIVE
+    BLOCKED,
+    INACTIVE
 }p_stt;
 
 typedef enum inst_type{ // Instruções previstas para os programas sintéticos

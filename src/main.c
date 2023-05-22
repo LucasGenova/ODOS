@@ -4,9 +4,9 @@ Esse arquivo deve contar o loop principal: A integração entre a lógica do sim
 */
 #include <stdio.h>
 #include <stdio.h>
-#include "../include/odos.h"
-#include "../include/sint.h"
-#include "../include/srtf.h"
+#include "odos.h"
+#include "sint.h"
+#include "srtf.h"
 
 int main(){
 
