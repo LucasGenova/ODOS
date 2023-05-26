@@ -1,0 +1,23 @@
+sint1
+1
+1
+64
+t u
+
+exec 100
+write 20
+exec 500
+P(t)
+exec 7000
+V(t)
+P(u)
+exec 200
+P(t)
+exec 20
+write 20
+V(u)
+V(t)
+print 150
+exec 500
+write 50
+exec 100

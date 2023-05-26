@@ -1,0 +1,17 @@
+sint3
+3
+1
+2
+s u
+
+exec 1000
+P(s)
+exec 100
+read 100
+P(u)
+read 400
+exec 300
+print 20
+V(u)
+exec 40
+V(s)

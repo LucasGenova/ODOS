@@ -27,6 +27,8 @@ int read_sint(char* filename, pcb* process_created){
 
     fscanf(sint_file, "%d ", &process_created->used_memory); //termina com um espaço para eliminar qualquer \n
 
+    process_created->process_state = READY;
+
     while(fgetc(sint_file) != '\n'); //ignora a lista de semaforos
 
     while(!feof(sint_file)){
