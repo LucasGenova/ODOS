@@ -18,16 +18,17 @@ int queue_process(pcb* process){
     for(int i=process->program->pc; i<process->program->word_count-process->program->pc; i++){
         switch(process->program->instruction_words[i].instruction.instruction_type){
             case EXEC:
-            case READ:
-            case WRITE:
             case PRINT:
                 queue[queue_size].remaining_time+=process->program->instruction_words[i].instruction.remaining_time;
                 break;
-            
+
             case P:
             case V:
                 queue[queue_size].remaining_time+=process->program->instruction_words[i].instruction.remaining_time;
                 i++;
+                break;
+
+            default:
                 break;
         }
     }
@@ -65,8 +66,6 @@ int update_queue(){
     for(int i=queue[0].process_pointer->program->pc; i<queue[0].process_pointer->program->word_count-queue[0].process_pointer->program->pc; i++){
         switch(queue[0].process_pointer->program->instruction_words[i].instruction.instruction_type){
             case EXEC:
-            case READ:
-            case WRITE:
             case PRINT:
                 queue[0].remaining_time+=queue[0].process_pointer->program->instruction_words[i].instruction.remaining_time;
                 break;
@@ -75,6 +74,9 @@ int update_queue(){
             case V:
                 queue[0].remaining_time+=queue[0].process_pointer->program->instruction_words[i].instruction.remaining_time;
                 i++;
+                break;
+
+            default:
                 break;
         }
     }
