@@ -10,24 +10,29 @@ Esse arquivo deve contar o loop principal: A integração entre a lógica do sim
 #include "../include/sint.h"
 #include "../include/srtf.h"
 #include "../include/threads.h"
+#include "../include/memoria.h"
 #define NUM_THREADS 16
-int semaphore = 0;
 
 int main(){
 
     pcb new_line;
 
     read_sint("./programs/sint2.txt", &new_line);
+    
+    //inicialização dos segmentos
+    int num_segments = TOTAL_MEMORY_SIZE / PAGE_SIZE;
+    Segment** segments = (Segment**)malloc(num_segments * sizeof(Segment*));
 
     //inicialização das threads
     pthread_t threads[NUM_THREADS];
     int i;
+    int status;
 
     for (i = 0; i < NUM_THREADS; i++) {
         printf("Main: criando a thread %d\n", i + 1);
         //int status = pthread_create(&threads[i], NULL, thread_function, (void *)i);
         //int status = pthread_create(&threads[i], NULL, thread_function, (void *)(intptr_t)i);
-        int status = pthread_create(&threads[i], NULL, thread_function, (void *)(intptr_t)(i + 1));
+        status = pthread_create(&threads[i], NULL, thread_function, (void *)(intptr_t)(i + 1));
 
         if (status) {
             printf("Erro ao criar a thread %d: %d\n", i, status);
@@ -43,6 +48,19 @@ int main(){
     }
 
     printf("Main: Todas as threads terminaram. Saindo do programa.\n");
+
+
+    //Gerenciamento de Memória
+    // Aloca os segmentos
+    for (int i = 0; i < num_segments; i++) {
+        segments[i] = allocateSegment(i, PAGE_SIZE);
+    }
+
+    // Desaloca os segmentos
+    for (int i = 0; i < num_segments; i++) {
+        deallocateSegment(segments[i]);
+    }
+    free(segments);
 
 
     //pequeno teste: escalonador funciona
