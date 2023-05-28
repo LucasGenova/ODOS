@@ -5,6 +5,7 @@ Esse arquivo deve conter a logica do simulador.
 #include <stdio.h>
 #include <stdlib.h>
 #include "odos.h"
+#include "srtf.h"
 #include "sint.h"
 
 //Os buffers and global variables
@@ -13,13 +14,10 @@ pcb process_control_block[BUFFER_SIZE]; //pcb buffer
 pcb* running_process = NULL;
 
 /*
-processInterrupt (1) -- interrupção gerada pelo final do quantum-time de um processo
 semaphoreP (10) -- tratamento de bloqueio de processo
 semaphoreV (11) -- tratamento de desbloqueio de processo
 memLoadReq (6) -- chamada de operação de carregamento na memória
 memLoadFinish (7) -- sinalização de final de carregamento
-processCreate (2) -- chamada para iniciar a criação de um processo no BCP *
-processFinish (3) -- chamada para terminar a existência de um processo no BCP *
 */
 
 int init_odos(){
@@ -79,4 +77,18 @@ int processFinish(pcb* finished_process){
         free(finished_process->program);
 
     //ToDo: liberar memoria usada
+
+    return 1;
+}
+
+int processInterrupt(){
+    if(!running_process) return 1;
+
+    running_process->process_state = READY;
+
+    update_queue();
+
+    running_process = NULL;
+
+    return 1;
 }
