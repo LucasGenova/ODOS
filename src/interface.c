@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <ncurses.h>
+#include <ncurses.h> //ToDo: Add ncurses to the include folder
 
 #include "../include/odos.h"
 #include "../include/sint.h"
@@ -49,7 +49,7 @@ void memoryStatus() {
 
 }
 
-int main() {
+int start_interface() {
     initscr();  // Inicializa a biblioteca ncurses
     cbreak();   // Desabilita o buffer de linha (lê um caractere por vez)
     noecho();   // Não exibe os caracteres digitados pelo usuário

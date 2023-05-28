@@ -44,7 +44,7 @@ int init_pcb_line(pcb* pcb_line){
     return 1;
 }
 
-int processCreate(pcb* system_pcb, pcb* read_process){
+int process_create(pcb* system_pcb, pcb* read_process){
     int i;
     for(i=0; i<BUFFER_SIZE && system_pcb[i].process_id>=0 && system_pcb[i].process_state != KILLED; i++);
 
@@ -65,7 +65,7 @@ int processCreate(pcb* system_pcb, pcb* read_process){
     return 1;
 }
 
-int processFinish(pcb* finished_process){
+int process_finish(pcb* finished_process){
     if(finished_process->process_name)
         free(finished_process->process_name);
     
@@ -81,7 +81,7 @@ int processFinish(pcb* finished_process){
     return 1;
 }
 
-int processInterrupt(){
+int process_interrupt(){
     if(!running_process) return 1;
 
     running_process->process_state = READY;

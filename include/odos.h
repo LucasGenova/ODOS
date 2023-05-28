@@ -41,7 +41,7 @@ typedef enum sys_call{
     fsFinish = 9,         //sinalização de final de operação no sistema de arquivos
     processCreate = 2,    //#chamada para iniciar a criação de um processo no BCP *
     processFinish = 3,    //#chamada para terminar a existência de um processo no BCP *
-}
+}sys_call;
 
 typedef struct instruction{
     inst_type instruction_type;
@@ -77,8 +77,8 @@ typedef struct process_control_block{ //Esta struct representa uma linha do BCP
 int init_odos();
 int init_pcb_line(pcb* pcb_line);
 
-int processInterrupt();
-int processCreate(pcb* system_pcb, pcb* read_process);
-int processFinish(pcb* finished_process);
+int process_interrupt();
+int process_create(pcb* system_pcb, pcb* read_process);
+int process_finish(pcb* finished_process);
 
 #endif //ODOS
