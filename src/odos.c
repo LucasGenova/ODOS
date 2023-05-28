@@ -6,6 +6,9 @@ Esse arquivo deve conter a logica do simulador.
 #include <stdlib.h>
 #include "odos.h"
 
+//Os buffers and global variables
+pcb process_control_block[BUFFER_SIZE];
+
 int init_pcb_line(pcb* pcb_line){
     pcb_line->process_name = (char*) calloc(BUFFER_SIZE, sizeof(char));
     

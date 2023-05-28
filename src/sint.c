@@ -4,7 +4,6 @@ Este arquivo define funções referentes aos programas sintéticos
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include "odos.h"
 #include "sint.h"
 
@@ -28,14 +27,17 @@ int read_sint(char* filename, pcb* process_created){
 
     fscanf(sint_file, "%d ", &process_created->used_memory); //termina com um espaço para eliminar qualquer \n
 
+    process_created->process_state = READY;
+
     while(fgetc(sint_file) != '\n'); //ignora a lista de semaforos
 
     while(!feof(sint_file)){
         parse_word(fgets(string_buffer, BUFFER_SIZE, sint_file), process_created->program);
     }
-
-    /*FILE* output = fopen("output.txt", "w");
-    fwrite(process_created->program->instruction_words, sizeof(word), process_created->program->word_count, output);*/
+    /**
+    FILE* output = fopen("output.txt", "w");
+    fwrite(process_created->program->instruction_words, sizeof(word), process_created->program->word_count, output);
+    //*/
 }
 
 int parse_word(char* instruction_read, prog* current_program){

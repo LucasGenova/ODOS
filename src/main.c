@@ -49,6 +49,7 @@ int main(){
 
     printf("Main: Todas as threads terminaram. Saindo do programa.\n");
 
+
     //Gerenciamento de Memória
     // Aloca os segmentos
     for (int i = 0; i < num_segments; i++) {
@@ -60,6 +61,7 @@ int main(){
         deallocateSegment(segments[i]);
     }
     free(segments);
+
 
     //pequeno teste: escalonador funciona
     /**
