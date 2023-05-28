@@ -1,8 +1,11 @@
+#ifndef MEMORY
+#define MEMORY
+
 #include <stdio.h>
 #include <stdlib.h>
 
 #define TOTAL_MEMORY_SIZE 1000000000 // 1 Gbyte
-#define PAGE_SIZE 8192 // 8 kbytes
+#define PAGE_SIZE 8000 // 8 kbytes
 
 typedef struct {
     int page_number;
@@ -13,7 +16,7 @@ typedef struct {
     int segment_number;
     Page* pages;
 } Segment;
-
+/*
 Segment* allocateSegment(int segment_number, int num_pages) {
     Segment* segment = (Segment*)malloc(sizeof(Segment));
     segment->segment_number = segment_number;
@@ -61,4 +64,8 @@ int allocatePage(Segment* segment, int page_number) {
 
     return index;
 }
+*/
+#endif //MEMORY
+
+
 

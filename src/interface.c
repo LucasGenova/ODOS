@@ -3,9 +3,9 @@
 #include <unistd.h>
 #include <ncurses.h> //ToDo: Add ncurses to the include folder
 
-#include "../include/odos.h"
-#include "../include/sint.h"
-#include "../include/srtf.h"
+#include "odos.h"
+#include "sint.h"
+#include "srtf.h"
 
 void newProcess() {
     int running =1;
@@ -54,6 +54,7 @@ int start_interface() {
     cbreak();   // Desabilita o buffer de linha (lê um caractere por vez)
     noecho();   // Não exibe os caracteres digitados pelo usuário
     nodelay(stdscr, TRUE);  // Torna a função getch() não bloqueante
+    curs_set(0); // Remove o cursor
 
     int running =1;
 
@@ -80,16 +81,24 @@ int start_interface() {
 
         if (op != ERR) {
             switch(op) {
-                case '1': newProcess();
-                          break;
+                case '1': 
+                    newProcess();
+                    break;
                 
-                case '2': processStatus();
-                          break;
+                case '2': 
+                    processStatus();
+                    break;
                 
-                case '3': memoryStatus();
-                          break;
+                case '3': 
+                    memoryStatus();
+                    break;
+
+                case '0':
+                    running=0;
+                    break;
                 
-                default: printf("\n\nDigite um valor valido\n\n");
+                default: 
+                    printf("\n\nDigite um valor valido\n\n"); //ToDo: do a print message
             }
         }
 

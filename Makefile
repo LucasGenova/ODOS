@@ -2,12 +2,12 @@ BUILD_DIR   := ./build
 INCLUDE_DIR := ./include
 SRC_DIR     := ./src
 
-objects = main.o odos.o srtf.o sint.o interface.o
+objects = main.o odos.o srtf.o sint.o interface.o memory.o
 
 all: output
 
 output: $(objects)
-	gcc $(BUILD_DIR)/main.o $(BUILD_DIR)/sint.o $(BUILD_DIR)/odos.o $(BUILD_DIR)/srtf.o $(BUILD_DIR)/interface.o -o $(BUILD_DIR)/output -pthread -lncurses
+	gcc $(BUILD_DIR)/main.o $(BUILD_DIR)/sint.o $(BUILD_DIR)/odos.o $(BUILD_DIR)/srtf.o $(BUILD_DIR)/memory.o $(BUILD_DIR)/interface.o -o $(BUILD_DIR)/output -pthread -lncurses
 
 
 $(objects): %.o: $(SRC_DIR)/%.c

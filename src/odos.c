@@ -5,13 +5,20 @@ Esse arquivo deve conter a logica do simulador.
 #include <stdio.h>
 #include <stdlib.h>
 #include "odos.h"
-#include "srtf.h"
 #include "sint.h"
+#include "srtf.h"
+#include "semaphore.h"
+#include "memory.h"
 
 //Os buffers and global variables
 pcb process_control_block[BUFFER_SIZE]; //pcb buffer
 
 pcb* running_process = NULL;
+
+//srtf.h
+s_queue queue[BUFFER_SIZE];
+
+//semaphore.h
 
 /*
 semaphoreP (10) -- tratamento de bloqueio de processo
