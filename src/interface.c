@@ -2,52 +2,23 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <ncurses.h> //ToDo: Add ncurses to the include folder
+#include <dirent.h>
+#include <string.h>
 
 #include "odos.h"
 #include "sint.h"
 #include "srtf.h"
 
-void newProcess() {
-    int running =1;
-    
-    do {
-        clear();  // Limpa a tela
-        mvprintw(5, 0, "Voce inseriu o arquivo do novo processo na pasta programs?"); 
-        mvprintw(6, 0, "1- Sim"); 
-        mvprintw(7, 0, "2- Nao"); 
-        mvprintw(8, 0, "3- Cancelar operacao");
-        refresh();
-        
-        int op = getch();
+extern int running;
+extern pcb* pcbBuffer;
+extern int showMemory;
+extern int showProcess;
 
-        if (op != ERR) {
-            switch(op) {
-                case '1': /*pcb new_line;
-                          read_sint("./programs/sint2.txt", &new_line);*/
-                          running=0;
-                          break;
-                
-                case '2': clear();  // Limpa a tela
-                          mvprintw(5, 0, "Insira o arquivo na pasta correta antes de prosseguir");
-                          refresh();
-                          break;
+WINDOW *results;
+WINDOW *messages;
+WINDOW *menu;
 
-                case '3': running=0;
-                          break;
-            }
-        }
-
-        sleep(1); 
-    }while(running==1);
-}
-
-void processStatus() {
-
-}
-
-void memoryStatus() {
-
-}
+char error_message[10*BUFFER_SIZE];
 
 int start_interface() {
     initscr();  // Inicializa a biblioteca ncurses
@@ -57,63 +28,194 @@ int start_interface() {
     curs_set(0); // Remove o cursor
 
     //gera as janelas
-    WINDOW *results = newwin(LINES, 2*COLS/3, 0, 0);
-    WINDOW *messages = newwin(LINES/2, width, 2*COLS/3, 0);
-    WINDOW *menu = newwin(height, width, 2*COLS/3, LINES/2);
-
+    results = newwin(LINES, 2*COLS/3, 0, 0);
+    messages = newwin(LINES/2, COLS/3, 0, 2*COLS/3);
+    menu = newwin(LINES/2, COLS/3, LINES/2, 2*COLS/3);
 
     return 1;
 }
 
-int update_interface(){
-    clear();  // Limpa a tela
-    mvprintw(4, 0, "--------------------");
-    mvprintw(5, 0, "| 1- Inserir novos |");
-    mvprintw(6, 0, "|    processos     |");
-    mvprintw(7, 0, "--------------------"); 
+void listarArquivos() {
+    DIR *dir;
+    struct dirent *entry;
+    int i=0;
 
-    mvprintw(4, 25, "------------------------");
-    mvprintw(5, 25, "| 2- Verificar estados |");
-    mvprintw(6, 25, "|    dos processos     |");
-    mvprintw(7, 25, "------------------------");
+    // Especifique o caminho da pasta que você deseja listar
+    const char *path = "./programs";
 
-    mvprintw(4, 54, "-----------------------");
-    mvprintw(5, 54, "| 3- Verificar estado |");
-    mvprintw(6, 54, "|    de ocupacao da   |");
-    mvprintw(6, 54, "|    memoria          |");
-    mvprintw(7, 54, "-----------------------");
-    refresh();
-    
-    int op = getch();
+    // Abre o diretório
+    dir = opendir(path);
+    if (dir == NULL) {
+        strcpy(error_message, "Nao foi possivel encontrar o diretorio");
+        return;
+    }
 
-        if (op != ERR) {
-            switch(op) {
-                case '1': 
-                    newProcess();
-                    break;
-                
-                case '2': 
-                    processStatus();
-                    break;
-                
-                case '3': 
-                    memoryStatus();
-                    break;
+    // Lê os arquivos do diretório
 
-                case '0':
-                    running=0;
-                    break;
-                
-                default: 
-                    clear();  // Limpa a tela
-                    mvprintw(4, 0, "Digite um valor valido");
-                    refresh();
+    i=0;
+
+    wclear(menu);  // Limpa a tela
+    box(menu, 0, 0);
+
+    while ((entry = readdir(dir)) != NULL) {
+        if(strstr(entry->d_name, ".txt") != NULL){
+            mvwprintw(menu, (1+i), 2, "%d- %s", (i+1), entry->d_name);
+            wrefresh(menu);
+
+            i++;
+        } 
+    }
+
+    rewinddir(dir);
+
+    int op = wgetch(menu), j=1;
+    char filename[BUFFER_SIZE];
+
+    if(op != ERR) {
+        /*for(i=i;i>=0; j++) {
+            entry = readdir(dir);
+
+            if(strstr(entry->d_name, ".txt") != NULL){
+               
+                i--;
+            }
+
+            if(j=(op-'0')) {
+                sprintf(filename, "./programs/%.60s", entry->d_name);
+                strcpy(error_message, filename);
+                //read_sint(filename, pcbBuffer);
+            }
+            
+        }*/
+
+        i=0; 
+
+        while ((entry = readdir(dir)) != NULL) {
+            if(strstr(entry->d_name, ".txt") != NULL){
+                i++;
+
+                if(i == (op-'0')) {
+                    sprintf(filename, "./programs/%.60s", entry->d_name);
+                    pcbBuffer = (pcb*) malloc(sizeof(pcb));
+                    read_sint(filename, pcbBuffer);
+                }
+            } 
+        }
+    }
+
+    // Fecha o diretório
+    closedir(dir);
+}
+
+void newProcess() {
+    wclear(menu);  // Limpa a tela
+    box(menu, 0, 0);
+    mvwprintw(menu, 1, 2, "Voce inseriu o arquivo do novo processo na pasta programs?");
+    mvwprintw(menu, 3, 2, "1- Sim"); 
+    mvwprintw(menu, 5, 2, "2- Nao"); 
+    mvwprintw(menu, 7, 2, "3- Cancelar operacao");
+    wrefresh(menu);
+
+    int op = wgetch(menu);
+
+    if (op != ERR) {
+        switch(op) {
+            case '1': listarArquivos();
+                      break;
+            
+            case '2': strcpy(error_message, "Insira o arquivo na pasta programs antes de continuar");
+                      break;
+
+            case '3': break;
+        }
+    }
+}
+
+void processStatus() {
+    showProcess = 1;
+    int op;
+
+    while(showProcess==1) {
+        wclear(results);  // Limpa a tela
+        box(results, 0, 0);
+        mvwprintw(results, 1, 2, "Aguarde...");
+        wrefresh(results);
+    }
+
+    while(showProcess==0) {
+        wclear(results);  // Limpa a tela
+        box(results, 0, 0);
+        mvwprintw(results, 1, 2, "Digite 4 se voce deseja sair do menu de exibicao dos processos");
+        
+        //Printa as informações de cada processo
+
+        wrefresh(results);
+
+        op = wgetch(results);
+
+        if(op != ERR) {
+            if(op == '4') {
+                break;
             }
         }
+    }
 
-    usleep(20000); 
+}
 
+void memoryStatus() {
+
+}
+
+int update_interface(){
+    wclear(results);  // Limpa a tela
+    box(results, 0, 0);
+    wrefresh(results);
+
+    wclear(messages);
+    box(messages, 0, 0);
+    mvwprintw(messages, 1, 2, "%s", error_message);
+    wrefresh(messages);
     
+    wclear(menu);  // Limpa a tela
+    box(menu, 0, 0);
+    mvwprintw(menu, 1, 2, "0- Fechar sistema operacional");
+    mvwprintw(menu, 1, 2, "1- Inserir novos processos");
+    mvwprintw(menu, 3, 2, "2- Verificar estados dos processos");
+    mvwprintw(menu, 5, 2, "3- Verificar estado de ocupacao da memoria");
+    wrefresh(menu);
+    
+    int op = wgetch(menu);
+
+    if(op != ERR) {
+        switch(op) {
+            case '1': 
+                newProcess();
+                break;
+            
+            case '2': 
+                processStatus();
+                break;
+            
+            case '3': 
+                memoryStatus();
+                break;
+
+            case '0':
+                running=0;
+                break;
+            
+            default: 
+                wclear(menu);  // Limpa a tela
+                mvwprintw(menu, 1, 0, "Digite um valor valido");
+                wrefresh(menu);
+        }
+    }
+
+    refresh();
 
     return 0;
+}
+
+int end_interface(){
+    endwin();
 }

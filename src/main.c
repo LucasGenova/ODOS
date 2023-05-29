@@ -3,6 +3,7 @@ Esse arquivo deve contar o loop principal: A integração entre a lógica do sim
 */
 #include <stdio.h>
 #include <stdlib.h>
+#include <ncurses.h>
 #include <pthread.h> //para as threads
 #include <unistd.h> //para o sleep
 #include <stdint.h> //para o casting
@@ -14,16 +15,30 @@ Esse arquivo deve contar o loop principal: A integração entre a lógica do sim
 #include "memory.h"
 #include "interface.h"
 
+int running = 1;
+
+int showProcess = 0;
+char process_info[10*BUFFER_SIZE];
+
+int showMemory = 0;
+char memory_info[10*BUFFER_SIZE];
+
+pcb* pcbBuffer;
+
+FILE* debug;
+
 int main(){
     start_interface();
     init_odos();
 
+    debug = fopen("debug.txt", "w");
     //disparar interface e odos em threads diferentes
-    while(RUNNING){
+    while(running){
         update_interface();
+        usleep(20000);
         run_odos();
     }
 
-    endwin();  // Encerra a biblioteca ncurses
+    end_interface();
     return 0;
 }

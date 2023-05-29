@@ -13,13 +13,12 @@ int read_sint(char* filename, pcb* process_created){
     FILE* sint_file;
     
     sint_file = fopen(filename, "r");
+   
     if(!sint_file) return 0; // abertura do arquivo falhou
-
-    fseek(sint_file, 0, SEEK_SET);
     
+    fseek(sint_file, 0, SEEK_SET);
     //aloca memória para os campos representados por ponteiros
     if(!init_pcb_line(process_created)) return 0;
-    
     fscanf(sint_file, "%s", process_created->process_name);
     fscanf(sint_file, "%d", &process_created->process_id);
     

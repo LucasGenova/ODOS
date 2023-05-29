@@ -15,12 +15,26 @@ pcb process_control_block[BUFFER_SIZE]; //pcb buffer
 
 pcb* running_process = NULL;
 
+int t=0;
 //srtf.h
 s_queue queue[BUFFER_SIZE];
 int queue_size;
+int srtf_process;
 
 //semaphore.h
 semaphore semaphore_list[BUFFER_SIZE];
+
+
+//main.c
+extern pcb* pcbBuffer;
+extern int showProcess;
+extern char process_info[10*BUFFER_SIZE];
+
+extern int showMemory;
+extern char memory_info[10*BUFFER_SIZE];
+
+extern FILE* debug;
+
 /*
 semaphoreP (10) -- tratamento de bloqueio de processo
 semaphoreV (11) -- tratamento de desbloqueio de processo
@@ -104,5 +118,21 @@ int process_interrupt(){
 }
 
 int run_odos(){
+    //confere o buffer de novos processos
+    
+    fprintf(debug, "hi\n");
+    if(pcbBuffer){
+        process_create(process_control_block, pcbBuffer);
+        
+        free(pcbBuffer);
+        pcbBuffer = NULL;
+    }
+
+    if(showProcess && running_process){
+        sprintf(process_info, "%s - %d", running_process->process_name, queue[srtf_process].remaining_time);
+
+        showProcess=0;
+    }
+
     return 1;
 }

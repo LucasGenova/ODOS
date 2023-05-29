@@ -8,6 +8,7 @@ Esse arquivo deve conter a logica do scheduler
 
 extern s_queue queue[BUFFER_SIZE];
 extern int queue_size;
+extern int srtf_process;
 
 int init_queue(){
     for(int i=0; i<BUFFER_SIZE; i++){
@@ -45,7 +46,7 @@ int queue_process(pcb* process){
 }
 
 int get_next_running_process(pcb** process_pointer){
-    int srtf_process=0;
+    srtf_process=0;
     int i;
 
     for(i=0; i<queue_size; i++){
@@ -63,7 +64,7 @@ int get_next_running_process(pcb** process_pointer){
     }
 
     (*process_pointer)=queue[srtf_process].process_pointer; 
-    return 1;
+    return srtf_process;
 }
 
 int update_queue(){
