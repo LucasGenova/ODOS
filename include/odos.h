@@ -75,6 +75,8 @@ typedef struct process_control_block{ //Esta struct representa uma linha do BCP
 }pcb;
 
 int init_odos();
+int run_odos();
+
 int init_pcb_line(pcb* pcb_line);
 
 int process_interrupt();

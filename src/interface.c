@@ -56,28 +56,35 @@ int start_interface() {
     nodelay(stdscr, TRUE);  // Torna a função getch() não bloqueante
     curs_set(0); // Remove o cursor
 
-    int running =1;
+    //gera as janelas
+    WINDOW *results = newwin(LINES, 2*COLS/3, 0, 0);
+    WINDOW *messages = newwin(LINES/2, width, 2*COLS/3, 0);
+    WINDOW *menu = newwin(height, width, 2*COLS/3, LINES/2);
 
-    do {
-        clear();  // Limpa a tela
-        mvprintw(4, 0, "--------------------");
-        mvprintw(5, 0, "| 1- Inserir novos |");
-        mvprintw(6, 0, "|    processos     |");
-        mvprintw(7, 0, "--------------------"); 
 
-        mvprintw(4, 25, "------------------------");
-        mvprintw(5, 25, "| 2- Verificar estados |");
-        mvprintw(6, 25, "|    dos processos     |");
-        mvprintw(7, 25, "------------------------");
+    return 1;
+}
 
-        mvprintw(4, 54, "-----------------------");
-        mvprintw(5, 54, "| 3- Verificar estado |");
-        mvprintw(6, 54, "|    de ocupacao da   |");
-        mvprintw(6, 54, "|    memoria          |");
-        mvprintw(7, 54, "-----------------------");
-        refresh();
-        
-        int op = getch();
+int update_interface(){
+    clear();  // Limpa a tela
+    mvprintw(4, 0, "--------------------");
+    mvprintw(5, 0, "| 1- Inserir novos |");
+    mvprintw(6, 0, "|    processos     |");
+    mvprintw(7, 0, "--------------------"); 
+
+    mvprintw(4, 25, "------------------------");
+    mvprintw(5, 25, "| 2- Verificar estados |");
+    mvprintw(6, 25, "|    dos processos     |");
+    mvprintw(7, 25, "------------------------");
+
+    mvprintw(4, 54, "-----------------------");
+    mvprintw(5, 54, "| 3- Verificar estado |");
+    mvprintw(6, 54, "|    de ocupacao da   |");
+    mvprintw(6, 54, "|    memoria          |");
+    mvprintw(7, 54, "-----------------------");
+    refresh();
+    
+    int op = getch();
 
         if (op != ERR) {
             switch(op) {
@@ -98,14 +105,15 @@ int start_interface() {
                     break;
                 
                 default: 
-                    printf("\n\nDigite um valor valido\n\n"); //ToDo: do a print message
+                    clear();  // Limpa a tela
+                    mvprintw(4, 0, "Digite um valor valido");
+                    refresh();
             }
         }
 
-        sleep(1); 
-    }while(running==1);
+    usleep(20000); 
 
-    endwin();  // Encerra a biblioteca ncurses
+    
 
     return 0;
 }

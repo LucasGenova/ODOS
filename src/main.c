@@ -15,10 +15,15 @@ Esse arquivo deve contar o loop principal: A integração entre a lógica do sim
 #include "interface.h"
 
 int main(){
-
     start_interface();
+    init_odos();
 
     //disparar interface e odos em threads diferentes
+    while(RUNNING){
+        update_interface();
+        run_odos();
+    }
 
+    endwin();  // Encerra a biblioteca ncurses
     return 0;
 }

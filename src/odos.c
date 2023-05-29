@@ -17,9 +17,10 @@ pcb* running_process = NULL;
 
 //srtf.h
 s_queue queue[BUFFER_SIZE];
+int queue_size;
 
 //semaphore.h
-
+semaphore semaphore_list[BUFFER_SIZE];
 /*
 semaphoreP (10) -- tratamento de bloqueio de processo
 semaphoreV (11) -- tratamento de desbloqueio de processo
@@ -32,6 +33,8 @@ int init_odos(){
         process_control_block[i].process_id=-1;
         process_control_block[i].process_state = KILLED;
     }
+    init_queue();
+    init_semaphore_list();
 
     return 1;
 }
@@ -97,5 +100,9 @@ int process_interrupt(){
 
     running_process = NULL;
 
+    return 1;
+}
+
+int run_odos(){
     return 1;
 }

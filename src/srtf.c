@@ -7,7 +7,14 @@ Esse arquivo deve conter a logica do scheduler
 #include "srtf.h"
 
 extern s_queue queue[BUFFER_SIZE];
-int queue_size=0;
+extern int queue_size;
+
+int init_queue(){
+    for(int i=0; i<BUFFER_SIZE; i++){
+        queue[i].process_pointer=NULL;
+        queue[i].remaining_time=0;
+    }
+}
 
 int queue_process(pcb* process){
     if(queue_size>BUFFER_SIZE) return 0;
