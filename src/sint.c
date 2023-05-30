@@ -9,6 +9,7 @@ Este arquivo define funções referentes aos programas sintéticos
 
 char string_buffer[BUFFER_SIZE];
 
+
 int read_sint(char* filename, pcb* process_created){
     FILE* sint_file;
     
@@ -36,6 +37,7 @@ int read_sint(char* filename, pcb* process_created){
     /**
     FILE* output = fopen("output.txt", "w");
     fwrite(process_created->program->instruction_words, sizeof(word), process_created->program->word_count, output);
+    fflush(output);
     //*/
 }
 

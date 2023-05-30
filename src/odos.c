@@ -33,7 +33,6 @@ extern char process_info[10*BUFFER_SIZE];
 extern int showMemory;
 extern char memory_info[10*BUFFER_SIZE];
 
-extern FILE* debug;
 
 /*
 semaphoreP (10) -- tratamento de bloqueio de processo
@@ -54,9 +53,6 @@ int init_odos(){
 }
 
 int init_pcb_line(pcb* pcb_line){
-    if(pcb_line->process_name)
-        free(pcb_line->process_name);
-
     pcb_line->process_name = (char*) calloc(BUFFER_SIZE, sizeof(char));
     
     pcb_line->program = (prog*) calloc(1, sizeof(prog));
@@ -86,6 +82,7 @@ int process_create(pcb* system_pcb, pcb* read_process){
     system_pcb[i].program = read_process->program;
     read_process->program = NULL;
 
+    queue_process(&system_pcb[i]);
     return 1;
 }
 
@@ -119,8 +116,16 @@ int process_interrupt(){
 
 int run_odos(){
     //confere o buffer de novos processos
-    
-    fprintf(debug, "hi\n");
+
+    if(!running_process){
+        get_next_running_process(&running_process);
+      
+    }
+
+    if(!queue[srtf_process].remaining_time){
+        get_next_running_process(&running_process);
+    }
+
     if(pcbBuffer){
         process_create(process_control_block, pcbBuffer);
         
@@ -131,8 +136,41 @@ int run_odos(){
     if(showProcess && running_process){
         sprintf(process_info, "%s - %d", running_process->process_name, queue[srtf_process].remaining_time);
 
+    
         showProcess=0;
     }
+
+    //avança o tempo da simulação
+    /**/
+    if(running_process){
+    switch(running_process->program->instruction_words[running_process->program->pc].instruction.instruction_type){
+        case EXEC:
+        case PRINT:
+            int jump = (10<running_process->program->instruction_words[running_process->program->pc].instruction.remaining_time ?10:running_process->program->instruction_words[running_process->program->pc].instruction.remaining_time );
+
+            t+=jump;
+            running_process->program->instruction_words[running_process->program->pc].instruction.remaining_time-=jump;
+
+            if(!running_process->program->instruction_words[running_process->program->pc].instruction.remaining_time)
+                running_process->program->pc++;
+
+            break;
+
+            case P:
+            case V:
+                running_process->program->pc++;
+                running_process->program->pc++;
+                break;
+
+            default:
+                running_process->program->pc++;
+                break;
+
+    }
+
+    update_queue();
+    }
+    //*/
 
     return 1;
 }

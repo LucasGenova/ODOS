@@ -20,6 +20,8 @@ WINDOW *menu;
 
 char error_message[10*BUFFER_SIZE];
 
+extern char process_info[10*BUFFER_SIZE];
+
 int start_interface() {
     initscr();  // Inicializa a biblioteca ncurses
     cbreak();   // Desabilita o buffer de linha (lê um caractere por vez)
@@ -31,6 +33,12 @@ int start_interface() {
     results = newwin(LINES, 2*COLS/3, 0, 0);
     messages = newwin(LINES/2, COLS/3, 0, 2*COLS/3);
     menu = newwin(LINES/2, COLS/3, LINES/2, 2*COLS/3);
+
+    wtimeout(menu,2000);
+    wtimeout(results,50);
+    wtimeout(messages,4000);
+     // or nodelay(stdscr, TRUE);
+
 
     return 1;
 }
@@ -96,6 +104,8 @@ void listarArquivos() {
 
                 if(i == (op-'0')) {
                     sprintf(filename, "./programs/%.60s", entry->d_name);
+                   
+                   
                     pcbBuffer = (pcb*) malloc(sizeof(pcb));
                     read_sint(filename, pcbBuffer);
                 }
@@ -132,33 +142,29 @@ void newProcess() {
 }
 
 void processStatus() {
-    showProcess = 1;
+    
     int op;
-
-    while(showProcess==1) {
-        wclear(results);  // Limpa a tela
-        box(results, 0, 0);
-        mvwprintw(results, 1, 2, "Aguarde...");
-        wrefresh(results);
-    }
-
-    while(showProcess==0) {
+    if(showProcess==0) {
+        
         wclear(results);  // Limpa a tela
         box(results, 0, 0);
         mvwprintw(results, 1, 2, "Digite 4 se voce deseja sair do menu de exibicao dos processos");
         
         //Printa as informações de cada processo
+        if(process_info)  
+            mvwprintw(results, 3, 2, "%s", process_info);
 
         wrefresh(results);
 
-        op = wgetch(results);
-
-        if(op != ERR) {
-            if(op == '4') {
-                break;
-            }
-        }
+        op = wgetch(results); 
     }
+     if(showProcess==1) {
+        wclear(results);  // Limpa a tela
+        box(results, 0, 0);
+        mvwprintw(results, 1, 2, "Aguarde...");
+        wrefresh(results);
+    }
+    showProcess = 1;
 
 }
 
@@ -179,11 +185,12 @@ int update_interface(){
     wclear(menu);  // Limpa a tela
     box(menu, 0, 0);
     mvwprintw(menu, 1, 2, "0- Fechar sistema operacional");
-    mvwprintw(menu, 1, 2, "1- Inserir novos processos");
-    mvwprintw(menu, 3, 2, "2- Verificar estados dos processos");
-    mvwprintw(menu, 5, 2, "3- Verificar estado de ocupacao da memoria");
+    mvwprintw(menu, 3, 2, "1- Inserir novos processos");
+    mvwprintw(menu, 5, 2, "2- Verificar estados dos processos");
+    mvwprintw(menu, 7, 2, "3- Verificar estado de ocupacao da memoria");
     wrefresh(menu);
-    
+
+    processStatus();
     int op = wgetch(menu);
 
     if(op != ERR) {

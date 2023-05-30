@@ -17,26 +17,25 @@ Esse arquivo deve contar o loop principal: A integração entre a lógica do sim
 
 int running = 1;
 
-int showProcess = 0;
+int showProcess = 1;
 char process_info[10*BUFFER_SIZE];
 
-int showMemory = 0;
+int showMemory = 1;
 char memory_info[10*BUFFER_SIZE];
 
 pcb* pcbBuffer;
 
-FILE* debug;
 
 int main(){
     start_interface();
     init_odos();
 
-    debug = fopen("debug.txt", "w");
     //disparar interface e odos em threads diferentes
     while(running){
+        
         update_interface();
-        usleep(20000);
         run_odos();
+        usleep(20000);
     }
 
     end_interface();

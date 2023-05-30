@@ -10,6 +10,7 @@ extern s_queue queue[BUFFER_SIZE];
 extern int queue_size;
 extern int srtf_process;
 
+
 int init_queue(){
     for(int i=0; i<BUFFER_SIZE; i++){
         queue[i].process_pointer=NULL;
@@ -58,6 +59,7 @@ int get_next_running_process(pcb** process_pointer){
 
     if(i==queue_size) return 0; //nenhum processo disponível (não acho que deva entrar aqui nunca)
 
+    
     for(i++; i<queue_size; i++){
         if(queue[i].remaining_time && queue[i].process_pointer->process_state == READY && queue[i].remaining_time<queue[srtf_process].remaining_time)
             srtf_process=i;
