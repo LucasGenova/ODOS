@@ -8,11 +8,16 @@
 #include "odos.h"
 #include "sint.h"
 #include "srtf.h"
+#include "memory.h"
 
 extern int running;
 extern pcb* pcbBuffer;
 extern int showMemory;
 extern int showProcess;
+extern char process_action[10*BUFFER_SIZE];
+extern int segment_number;
+extern int page_number;
+extern int index;
 
 WINDOW *results;
 WINDOW *messages;
@@ -152,7 +157,7 @@ void processStatus() {
         
         //Printa as informações de cada processo
         if(process_info)  
-            mvwprintw(results, 3, 2, "%s", process_info);
+            mvwprintw(results, 3, 2, "%s - %s", process_action, process_info);
 
         wrefresh(results);
 
@@ -161,14 +166,35 @@ void processStatus() {
      if(showProcess==1) {
         wclear(results);  // Limpa a tela
         box(results, 0, 0);
-        mvwprintw(results, 1, 2, "Aguarde...");
+        mvwprintw(results, 1, 2, "Esperando usuario digitar...");
         wrefresh(results);
     }
     showProcess = 1;
 
 }
 
-void memoryStatus() {
+void memoryStatus(int value) {
+    int num_segments = TOTAL_MEMORY_SIZE / PAGE_SIZE;
+    Segment** segments = (Segment**)malloc(num_segments * sizeof(Segment*));
+
+    for (int i = 0; i < num_segments; i++) {
+        segments[i] = allocateSegment(i, PAGE_SIZE);
+    }
+
+    for (int i = 0; i < num_segments * value; i++) {
+        segment_number = i % num_segments;
+        page_number = i % PAGE_SIZE;
+        index = allocatePage(segments[segment_number], page_number);
+    }
+
+    /*
+    // Desaloca os segmentos (não sei quando será necessário)
+    for (int i = 0; i < num_segments; i++) {
+        deallocateSegment(segments[i]);
+    }
+    free(segments);
+    */
+    return 0;
 
 }
 
@@ -204,7 +230,10 @@ int update_interface(){
                 break;
             
             case '3': 
-                memoryStatus();
+                memoryStatus(0);
+                wclear;
+                mvwprintw(results, 1, 0, "Alocada página %d para o segmento %d, índice %d\n", page_number, segment_number, index);
+                wrefresh(results);
                 break;
 
             case '0':
