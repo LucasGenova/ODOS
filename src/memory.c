@@ -26,7 +26,7 @@ int allocatePage(Segment* segment, int page_number) {
     int found = 0;
 
     while (!found) {
-        Page* page = &segment->pages[index];
+        Page *page = &segment->pages[index];
 
         if (page->page_number == -1) {
             page->page_number = page_number;

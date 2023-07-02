@@ -9,15 +9,18 @@
 #include "sint.h"
 #include "srtf.h"
 #include "memory.h"
+//#include "memory.c"
 
 extern int running;
 extern pcb* pcbBuffer;
 extern int showMemory;
 extern int showProcess;
 extern char process_action[10*BUFFER_SIZE];
-extern int segment_number;
-extern int page_number;
-extern int index2;
+//extern int segment_number;
+//extern int page_number;
+int index2;
+extern Segment;
+extern Page;
 
 WINDOW *results;
 WINDOW *messages;
@@ -153,7 +156,6 @@ void processStatus() {
         
         wclear(results);  // Limpa a tela
         box(results, 0, 0);
-        mvwprintw(results, 1, 2, "Digite 4 se voce deseja sair do menu de exibicao dos processos");
         
         //Printa as informações de cada processo
         if(process_info)  
@@ -182,9 +184,13 @@ void memoryStatus(int value) {
     }
 
     for (int i = 0; i < num_segments * value; i++) {
-        segment_number = i % num_segments;
-        page_number = i % PAGE_SIZE;
-        index2 = allocatePage(segments[segment_number], page_number);
+        segments[i]->segment_number = i % num_segments;
+        segments[i]->pages->page_number = i % PAGE_SIZE;
+        index2 = allocatePage(segments[segments[i]->segment_number], segments[i]->pages->page_number);
+        wclear;
+        mvwprintw(results, 1, 0, "Alocada página %d para o segmento %d, índice %d\n", segments[i]->pages->page_number, segments[i]->segment_number, index2);
+        usleep(5000);
+        wrefresh(results);
     }
 
     /*
@@ -230,9 +236,9 @@ int update_interface(){
             
             case '3': 
                 memoryStatus(0);
-                wclear;
-                mvwprintw(results, 1, 0, "Alocada página %d para o segmento %d, índice %d\n", page_number, segment_number, index2);
-                wrefresh(results);
+                /*wclear;
+                mvwprintw(results, 1, 0, "Alocada página %d para o segmento %d, índice %d\n", segments[i]->pages->page_number, segments[i]->segment_number, index2);
+                wrefresh(results);*/
                 break;
 
             case '0':

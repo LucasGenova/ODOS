@@ -5,7 +5,6 @@ Contém as definições das representações internas do simulador e as definiç
 
 #ifndef ODOS
 #define ODOS
-
 #define BUFFER_SIZE 100 //ToDo: as estruturas de dados devem crescer dinâmicamente sem a necessidade de um limite maximo
 
 typedef enum proc_state{ // Estados previstos para um processo.
@@ -24,7 +23,6 @@ typedef enum inst_type{ // Instruções previstas para os programas sintéticos
     P,
     V,
     PRINT
- 
 }inst_type;
 
 typedef enum sys_call{
