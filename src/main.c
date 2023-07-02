@@ -19,6 +19,7 @@ int running = 1;
 
 int showProcess = 1;
 char process_info[10*BUFFER_SIZE];
+char process_action[10*BUFFER_SIZE];
 
 int showMemory = 1;
 char memory_info[10*BUFFER_SIZE];
