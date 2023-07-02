@@ -17,7 +17,7 @@ extern int showProcess;
 extern char process_action[10*BUFFER_SIZE];
 extern int segment_number;
 extern int page_number;
-extern int index;
+extern int index2;
 
 WINDOW *results;
 WINDOW *messages;
@@ -184,7 +184,7 @@ void memoryStatus(int value) {
     for (int i = 0; i < num_segments * value; i++) {
         segment_number = i % num_segments;
         page_number = i % PAGE_SIZE;
-        index = allocatePage(segments[segment_number], page_number);
+        index2 = allocatePage(segments[segment_number], page_number);
     }
 
     /*
@@ -194,7 +194,6 @@ void memoryStatus(int value) {
     }
     free(segments);
     */
-    return 0;
 
 }
 
@@ -232,7 +231,7 @@ int update_interface(){
             case '3': 
                 memoryStatus(0);
                 wclear;
-                mvwprintw(results, 1, 0, "Alocada página %d para o segmento %d, índice %d\n", page_number, segment_number, index);
+                mvwprintw(results, 1, 0, "Alocada página %d para o segmento %d, índice %d\n", page_number, segment_number, index2);
                 wrefresh(results);
                 break;
 

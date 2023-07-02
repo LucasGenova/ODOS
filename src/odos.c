@@ -4,6 +4,8 @@ Esse arquivo deve conter a logica do simulador.
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
 #include "odos.h"
 #include "sint.h"
 #include "srtf.h"
