@@ -29,6 +29,7 @@ semaphore semaphore_list[BUFFER_SIZE];
 extern pcb* pcbBuffer;
 extern int showProcess;
 extern char process_info[10*BUFFER_SIZE];
+extern char process_action[10*BUFFER_SIZE];
 
 extern int showMemory;
 extern char memory_info[10*BUFFER_SIZE];
@@ -142,11 +143,18 @@ int run_odos(){
 
     //avança o tempo da simulação
     /**/
+
+    int jump; 
+    
     if(running_process){
     switch(running_process->program->instruction_words[running_process->program->pc].instruction.instruction_type){
         case EXEC:
+            strcpy(process_action, "Exec");
+
         case PRINT:
-            int jump = (10<running_process->program->instruction_words[running_process->program->pc].instruction.remaining_time ?10:running_process->program->instruction_words[running_process->program->pc].instruction.remaining_time );
+            strcpy(process_action, "Print");
+
+            jump = (10<running_process->program->instruction_words[running_process->program->pc].instruction.remaining_time ?10:running_process->program->instruction_words[running_process->program->pc].instruction.remaining_time );
 
             t+=jump;
             running_process->program->instruction_words[running_process->program->pc].instruction.remaining_time-=jump;
