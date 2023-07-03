@@ -1,4 +1,7 @@
 #include "memory.h"
+//#include "disk.h"
+
+int index2;
 
 Segment* allocateSegment(int segment_number, int num_pages) {
     Segment* segment = (Segment*)malloc(sizeof(Segment));
@@ -22,11 +25,11 @@ void deallocateSegment(Segment* segment) {
 // aloca uma página em um segmento usando segunda chance
 int allocatePage(Segment* segment, int page_number) {
     int num_pages = sizeof(segment->pages) / sizeof(segment->pages[0]);
-    int index = 0;
+    index2 = 0;
     int found = 0;
 
     while (!found) {
-        Page *page = &segment->pages[index];
+        Page *page = &segment->pages[index2];
 
         if (page->page_number == -1) {
             page->page_number = page_number;
@@ -42,8 +45,8 @@ int allocatePage(Segment* segment, int page_number) {
             }
         }
 
-        index = (index + 1) % num_pages;
+        index2 = (index2 + 1) % num_pages;
     }
 
-    return index;
+    return index2;
 }

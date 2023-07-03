@@ -4,11 +4,14 @@ Este arquivo define funções referentes aos programas sintéticos
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
 #include "odos.h"
 #include "sint.h"
+//#include "disk.h"
 
 char string_buffer[BUFFER_SIZE];
-
+extern char process_action[10*BUFFER_SIZE];
 
 int read_sint(char* filename, pcb* process_created){
     FILE* sint_file;
@@ -45,27 +48,41 @@ int parse_word(char* instruction_read, prog* current_program){
     switch(instruction_read[0]){
         
         case 'e': //exec
+            strcpy(process_action, "Exec");
+            
             current_program->instruction_words[current_program->word_count].instruction.instruction_type = EXEC;
             
             sscanf(instruction_read, "%*s%d", &current_program->instruction_words[current_program->word_count++].instruction.remaining_time);
             break;
 
         case 'r': //read
+            strcpy(process_action, "Read");
+
             current_program->instruction_words[current_program->word_count].instruction.instruction_type = READ;
             
             sscanf(instruction_read, "%*s%d", &current_program->instruction_words[current_program->word_count++].instruction.remaining_time);
+            memoryStatus(current_program->instruction_words[current_program->word_count++].instruction.remaining_time);
+            //AQUI TBM 
             break;
 
         case 'w': //write
+            strcpy(process_action, "Write");
+
             current_program->instruction_words[current_program->word_count].instruction.instruction_type = WRITE;
             
             sscanf(instruction_read, "%*s%d", &current_program->instruction_words[current_program->word_count++].instruction.remaining_time);
+            memoryStatus(current_program->instruction_words[current_program->word_count++].instruction.remaining_time);
+            dRequest(current_program->instruction_words[current_program->word_count++].instruction.remaining_time, 0);
+            //AQUI LUIZA -> AQUI LUIZA OQ? -> ONDE EU MUDEI BOBONA
             break;
 
         case 'p': //print
+            strcpy(process_action, "Print");
+
             current_program->instruction_words[current_program->word_count].instruction.instruction_type = PRINT;
             
             sscanf(instruction_read, "%*s%d", &current_program->instruction_words[current_program->word_count++].instruction.remaining_time);
+            pRequest(1, 1, 0);
             break;
 
         case 'P': //P(s)

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "semaphore.h"
+//#include "disk.h"
 
 int init_semaphore_list(){
     for(int i=0; i<BUFFER_SIZE; i++){

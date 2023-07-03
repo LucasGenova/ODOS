@@ -11,6 +11,7 @@ Esse arquivo deve conter a logica do simulador.
 #include "srtf.h"
 #include "semaphore.h"
 #include "memory.h"
+//#include "disk.h"
 
 //Os buffers and global variables
 pcb process_control_block[BUFFER_SIZE]; //pcb buffer
@@ -152,6 +153,16 @@ int run_odos(){
     switch(running_process->program->instruction_words[running_process->program->pc].instruction.instruction_type){
         case EXEC:
             strcpy(process_action, "Exec");
+
+            jump = (10<running_process->program->instruction_words[running_process->program->pc].instruction.remaining_time ?10:running_process->program->instruction_words[running_process->program->pc].instruction.remaining_time );
+
+            t+=jump;
+            running_process->program->instruction_words[running_process->program->pc].instruction.remaining_time-=jump;
+
+            if(!running_process->program->instruction_words[running_process->program->pc].instruction.remaining_time)
+                running_process->program->pc++;
+
+            break;
 
         case PRINT:
             strcpy(process_action, "Print");

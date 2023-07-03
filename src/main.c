@@ -14,6 +14,7 @@ Esse arquivo deve contar o loop principal: A integração entre a lógica do sim
 #include "threads.h"
 #include "memory.h"
 #include "interface.h"
+//#include "disk.h"
 
 int running = 1;
 

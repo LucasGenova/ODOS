@@ -5,6 +5,7 @@ Esse arquivo deve conter a logica do scheduler
 #include <stdio.h>
 #include <stdlib.h>
 #include "srtf.h"
+//#include "disk.h"
 
 extern s_queue queue[BUFFER_SIZE];
 extern int queue_size;

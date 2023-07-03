@@ -2,7 +2,7 @@ BUILD_DIR   := ./build
 INCLUDE_DIR := ./include
 SRC_DIR     := ./src
 
-objects = main.o odos.o srtf.o sint.o interface.o memory.o semaphore.o
+objects = main.o odos.o srtf.o sint.o interface.o memory.o semaphore.o disk.o
 
 all: output
 

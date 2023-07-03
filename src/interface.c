@@ -9,6 +9,7 @@
 #include "sint.h"
 #include "srtf.h"
 #include "memory.h"
+#include "disk.h"
 //#include "memory.c"
 
 extern int running;
@@ -18,9 +19,15 @@ extern int showProcess;
 extern char process_action[10*BUFFER_SIZE];
 //extern int segment_number;
 //extern int page_number;
-int index2;
-extern Segment;
-extern Page;
+extern int index2;
+//extern Segment;
+//extern Page;
+int acumuladorDisco = 0;
+int acumuladorCilindro = 0;
+int acumuladorTrilha = 0;
+int acumuladorSetor = 0;
+int acumuladorImpressao = 0;
+int acumuladorPagina = 0;
 
 WINDOW *results;
 WINDOW *messages;
@@ -46,8 +53,6 @@ int start_interface() {
     wtimeout(results,50);
     wtimeout(messages,4000);
      // or nodelay(stdscr, TRUE);
-
-
     return 1;
 }
 
@@ -149,6 +154,13 @@ void newProcess() {
     }
 }
 
+/*void errorSettingTime() {
+    wclear(messages);
+    box(messages, 0, 0);
+    mvwprintw(messages, 1, 2, "O vetor que aloca o tempo de espera para diskRequest esta lotado...");
+    wrefresh(messages);
+}*/
+
 void processStatus() {
     
     int op;
@@ -187,21 +199,49 @@ void memoryStatus(int value) {
         segments[i]->segment_number = i % num_segments;
         segments[i]->pages->page_number = i % PAGE_SIZE;
         index2 = allocatePage(segments[segments[i]->segment_number], segments[i]->pages->page_number);
-        wclear;
+        wclear(results);
+        box(results, 0, 0);
         mvwprintw(results, 1, 0, "Alocada página %d para o segmento %d, índice %d\n", segments[i]->pages->page_number, segments[i]->segment_number, index2);
         usleep(5000);
         wrefresh(results);
     }
 
-    /*
+    
     // Desaloca os segmentos (não sei quando será necessário)
     for (int i = 0; i < num_segments; i++) {
         deallocateSegment(segments[i]);
     }
     free(segments);
-    */
-
 }
+
+void dRequest(int trilha,int disk_finish){
+    int numeroDisco = trilha / (10 * 50);
+    int cilindro = (trilha % (10 * 50)) / 50;
+    int setor = (trilha % 50) * 2; //exemplo de possibilidade de disco
+
+    wclear(results);
+    box(results, 0, 0);
+    mvwprintw(results, 1, 0, "Requisição de Disco: Disco %d, Cilindro %d, Trilha %d, Setor %d\n", numeroDisco, cilindro, trilha, setor);
+    wrefresh(results);
+    
+    acumuladorDisco += numeroDisco;
+    acumuladorCilindro += cilindro;
+    acumuladorTrilha += trilha;
+    acumuladorSetor += setor;
+    disk_finish = 1;
+}
+
+void pRequest(int numeroImpressora, int numeroPaginas, int print_finish){
+    wclear(results);
+    box(results, 0, 0);
+    mvwprintw(results, 1, 2, "Solicitação de Impressão: Impressora %d, Páginas %d\n", numeroImpressora, numeroPaginas);
+    acumuladorImpressao += numeroImpressora;
+    acumuladorPagina += numeroPaginas;
+    mvwprintw(results, 1, 0, "Estado Pós-impressão: Impressão %d, Página %d\n", acumuladorImpressao, acumuladorPagina);
+    print_finish = 1;
+    wrefresh(results);
+}
+
 
 int update_interface(){
     wclear(results);  // Limpa a tela
